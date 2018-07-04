@@ -1,7 +1,45 @@
-var Router = ReactRouterDOM.HashRouter;
-var Route = ReactRouterDOM.Route;
-var Link = ReactRouterDOM.Link;
-var Switch = ReactRouterDOM.Switch;
+const Router = ReactRouterDOM.HashRouter;
+const Route = ReactRouterDOM.Route;
+const Link = ReactRouterDOM.Link;
+const Switch = ReactRouterDOM.Switch;
+
+const doctors = [
+    {
+        name: 'Jason',
+        city: 'San Francisco',
+        bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
+        imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
+        specialties: [
+            'Pediatrics'
+        ]    
+    }, {
+        name: 'Jason',
+        city: 'San Francisco',
+        bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
+        imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
+        specialties: [
+            'Pediatrics'
+        ]
+    }, {
+        name: 'Jason',
+        city: 'San Francisco',
+        bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
+        imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
+        specialties: [
+            'Pediatrics'
+        ]
+    }, {
+        name: 'Jason',
+        city: 'San Francisco',
+        bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
+        imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
+        specialties: [
+            'Vision',
+            'Pediatrics'
+        ]
+    }
+]
+
 
 const DoctorSearchForm = (props) => (
     <div>
@@ -19,43 +57,47 @@ const DoctorSearchForm = (props) => (
     </div>
 ) 
 
+const DoctorRow = (props) => {
+    let specialties = props.doctor.specialties.join(', ')
+    
+    return(
+        <tr>
+            <td><Link to="/detail">{props.doctor.name}</Link></td>
+            <td>{props.doctor.city}</td>
+            <td>{specialties}</td>
+        </tr>
+    )
+}
 
+const DoctorTable = (props) => {
+    return (    
+        <div>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>City</th>
+                        <th>Specialty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {
+                        props.doctors.map((doctor, index) => 
+                            <DoctorRow key={index} doctor={doctor} />
+                        )
+                    }
 
-const DoctorTable = (props) => (
-    <div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>City</th>
-                    <th>Specialty</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><Link to="/detail">Name 1</Link></td>
-                    <td>San Francisco</td>
-                    <td>Pediatrics</td>
-                </tr>
-                <tr>
-                    <td><Link to="/detail">Name 2</Link></td>
-                    <td>Mountain View</td>
-                    <td>Surgery</td>
-                </tr>
-                <tr>
-                    <td><Link to="/detail">Name 3</Link></td>
-                    <td>San Francisco</td>
-                    <td>Pediatrics2</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-)
+                    
+                </tbody>
+            </table>
+        </div>
+    )
+}
 
 const DoctorSearchPage = (props) => (
     <div class="container">
         <DoctorSearchForm />
-        <DoctorTable />
+        <DoctorTable doctors={doctors} />
     </div>
 )
 
@@ -76,7 +118,7 @@ const DoctorDetailPage = (props) => (
                 <li class="list-group-item">Pediatrics</li>
             </ul>
             <h4>Similar doctors</h4>
-            <DoctorTable />
+            <DoctorTable doctors={[]} />
         </div>
     </div>
 )
