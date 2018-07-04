@@ -1,4 +1,5 @@
 const App = () => (
+
     <div class="container">
         <form>
             <div class="input-group">
@@ -37,7 +38,24 @@ const App = () => (
                 </tr>
             </tbody>
         </table>
+
+        <div class="media">
+            <div class="media-left media-middle">
+                <a href="#">
+                    <img class="media-object" src="https://asset1.betterdoctor.com/assets/general_doctor_male.png" alt="Image" />
+                </a>
+            </div>
+                <div class="media-body">
+                    <h4 class="media-heading">Devon Awesome</h4>
+                    Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).
+                </div>
+            </div>
+            <h4>Specialties</h4>
+            <ul class="list-group">
+                <li class="list-group-item">Pediatrics</li>
+            </ul>
     </div>
+
 )
 
 ReactDOM.render(
