@@ -1,4 +1,9 @@
-const DoctorTable = (props) => (
+var Router = ReactRouterDOM.BrowserRouter;
+var Route = ReactRouterDOM.Route;
+var Link = ReactRouterDOM.Link;
+var Switch = ReactRouterDOM.Switch;
+
+const DoctorSearchForm = (props) => (
     <div>
         <form>
             <div class="input-group">
@@ -11,6 +16,13 @@ const DoctorTable = (props) => (
                 </div>
             </div>
         </form>
+    </div>
+) 
+
+
+
+const DoctorTable = (props) => (
+    <div>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -21,22 +33,29 @@ const DoctorTable = (props) => (
             </thead>
             <tbody>
                 <tr>
-                    <td>Devon Awesome</td>
+                    <td><Link to="/about">Name 1</Link></td>
                     <td>San Francisco</td>
                     <td>Pediatrics</td>
                 </tr>
                 <tr>
-                    <td>Ellie Bartowski</td>
+                    <td><Link to="/about">Name 2</Link></td>
                     <td>Mountain View</td>
                     <td>Surgery</td>
                 </tr>
                 <tr>
-                    <td>Devon Awesome2</td>
+                    <td><Link to="/about">Name 3</Link></td>
                     <td>San Francisco</td>
                     <td>Pediatrics2</td>
                 </tr>
             </tbody>
         </table>
+    </div>
+)
+
+const DoctorSearchPage = (props) => (
+    <div>
+        <DoctorSearchForm />
+        <DoctorTable />
     </div>
 )
 
@@ -60,15 +79,47 @@ const DoctorDetail = (props) => (
     </div>
 )
 
+const Home = () => (
+    <div>
+        <h2>Home</h2>
+    </div>
+);
+
+const About = () => (
+    <div>
+        <h2>About</h2>
+    </div>
+);
+
 const App = () => (
 
-    <div class="container">
-        
-        <DoctorTable />
-        <DoctorDetail />
-        
-    </div>
+    // <div class="container">
+    
 
+    //     <DoctorTable />
+    //     <DoctorDetail />
+        
+    // </div>
+
+    <Router>
+        <div>
+            <ul>
+                <li>
+                    <Link to="/">Home</Link>
+                </li>
+                <li>
+                    <Link to="/about">About</Link>
+                </li>
+                
+            </ul>
+
+            <hr />
+            <Switch>
+                <Route exact path="/" component={DoctorSearchPage} />
+                <Route path="/about" component={DoctorDetail} />
+            </Switch>
+        </div>
+    </Router>
 )
 
 
