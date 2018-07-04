@@ -5,6 +5,7 @@ const Switch = ReactRouterDOM.Switch;
 
 const doctors = [
     {
+        id: '1',
         name: 'Jason',
         city: 'San Francisco',
         bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
@@ -13,7 +14,8 @@ const doctors = [
             'Pediatrics'
         ]    
     }, {
-        name: 'Jason',
+        id: '2',
+        name: 'Jason2',
         city: 'San Francisco',
         bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
         imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
@@ -21,7 +23,8 @@ const doctors = [
             'Pediatrics'
         ]
     }, {
-        name: 'Jason',
+        id: '3',
+        name: 'Jason3',
         city: 'San Francisco',
         bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
         imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
@@ -29,13 +32,15 @@ const doctors = [
             'Pediatrics'
         ]
     }, {
-        name: 'Jason',
+        id: '4',
+        name: 'Jason4',
         city: 'San Francisco',
         bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
         imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
         specialties: [
             'Vision',
-            'Pediatrics'
+            'Pediatrics',
+            'Neurology'
         ]
     }
 ]
@@ -62,7 +67,15 @@ const DoctorRow = (props) => {
     
     return(
         <tr>
-            <td><Link to="/detail">{props.doctor.name}</Link></td>
+            <td>
+                <Link 
+                    to={{
+                        pathname: `/detail/${props.doctor.id}`,
+                        state: props.doctor
+                    }}>
+                    {props.doctor.name}
+                </Link>
+            </td>
             <td>{props.doctor.city}</td>
             <td>{specialties}</td>
         </tr>
@@ -101,27 +114,34 @@ const DoctorSearchPage = (props) => (
     </div>
 )
 
-const DoctorDetailPage = (props) => (
-    <div class="container">
-        <div class="media">
-            <div class="media-left media-middle">
-                <a href="#">
-                    <img class="media-object" src="https://asset1.betterdoctor.com/assets/general_doctor_male.png" alt="Image" />
-                </a>
+const DoctorDetailPage = (props) => {
+    console.log(props.match.params.id, props.location.state)
+    const doctor = props.location.state
+    return (
+        <div class="container">
+            <div class="media">
+                <div class="media-left media-middle">
+                    <a href="#">
+                        <img class="media-object" src="https://asset1.betterdoctor.com/assets/general_doctor_male.png" alt="Image" />
+                    </a>
+                </div>
+                <div class="media-body">
+                    <h4 class="media-heading">{doctor.name}</h4>
+                    {doctor.bio}
+                </div>
+                <h4>Specialties</h4>
+                <ul class="list-group">
+                    {
+                        doctor.specialties.map((specialty) => <li class="list-group-item">{specialty}</li>)
+                    }
+                    
+                </ul>
+                <h4>Similar doctors</h4>
+                <DoctorTable doctors={[]} />
             </div>
-            <div class="media-body">
-                <h4 class="media-heading">Devon Awesome</h4>
-                Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).
-            </div>
-            <h4>Specialties</h4>
-            <ul class="list-group">
-                <li class="list-group-item">Pediatrics</li>
-            </ul>
-            <h4>Similar doctors</h4>
-            <DoctorTable doctors={[]} />
         </div>
-    </div>
-)
+    )
+}
 
 const App = () => (
 
@@ -138,7 +158,7 @@ const App = () => (
             <Link to="/">Home</Link>
             <Switch>
                 <Route exact path="/" component={DoctorSearchPage} />
-                <Route path="/detail" component={DoctorDetailPage} />
+                <Route path="/detail/:id" component={DoctorDetailPage} />
             </Switch>
         </div>
     </Router>
