@@ -1,4 +1,4 @@
-var Router = ReactRouterDOM.BrowserRouter;
+var Router = ReactRouterDOM.HashRouter;
 var Route = ReactRouterDOM.Route;
 var Link = ReactRouterDOM.Link;
 var Switch = ReactRouterDOM.Switch;
@@ -8,7 +8,7 @@ const DoctorSearchForm = (props) => (
         <form>
             <div class="input-group">
 
-                <input type="text" class="form-control" id="exampleInputAmount" placeholder="Amount" />
+                <input type="text" class="form-control" />
                 <div class="input-group-btn">
                     <button class="btn btn-primary">
                         <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -33,17 +33,17 @@ const DoctorTable = (props) => (
             </thead>
             <tbody>
                 <tr>
-                    <td><Link to="/about">Name 1</Link></td>
+                    <td><Link to="/detail">Name 1</Link></td>
                     <td>San Francisco</td>
                     <td>Pediatrics</td>
                 </tr>
                 <tr>
-                    <td><Link to="/about">Name 2</Link></td>
+                    <td><Link to="/detail">Name 2</Link></td>
                     <td>Mountain View</td>
                     <td>Surgery</td>
                 </tr>
                 <tr>
-                    <td><Link to="/about">Name 3</Link></td>
+                    <td><Link to="/detail">Name 3</Link></td>
                     <td>San Francisco</td>
                     <td>Pediatrics2</td>
                 </tr>
@@ -53,14 +53,14 @@ const DoctorTable = (props) => (
 )
 
 const DoctorSearchPage = (props) => (
-    <div>
+    <div class="container">
         <DoctorSearchForm />
         <DoctorTable />
     </div>
 )
 
-const DoctorDetail = (props) => (
-    <div>
+const DoctorDetailPage = (props) => (
+    <div class="container">
         <div class="media">
             <div class="media-left media-middle">
                 <a href="#">
@@ -75,21 +75,11 @@ const DoctorDetail = (props) => (
             <ul class="list-group">
                 <li class="list-group-item">Pediatrics</li>
             </ul>
+            <h4>Similar doctors</h4>
+            <DoctorTable />
         </div>
     </div>
 )
-
-const Home = () => (
-    <div>
-        <h2>Home</h2>
-    </div>
-);
-
-const About = () => (
-    <div>
-        <h2>About</h2>
-    </div>
-);
 
 const App = () => (
 
@@ -103,20 +93,10 @@ const App = () => (
 
     <Router>
         <div>
-            <ul>
-                <li>
-                    <Link to="/">Home</Link>
-                </li>
-                <li>
-                    <Link to="/about">About</Link>
-                </li>
-                
-            </ul>
-
-            <hr />
+            <Link to="/">Home</Link>
             <Switch>
                 <Route exact path="/" component={DoctorSearchPage} />
-                <Route path="/about" component={DoctorDetail} />
+                <Route path="/detail" component={DoctorDetailPage} />
             </Switch>
         </div>
     </Router>
