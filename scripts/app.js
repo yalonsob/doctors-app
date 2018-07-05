@@ -112,13 +112,30 @@ const doctors2 = [
 ]
 
 class DoctorSearchForm extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.handleSearch = this.handleSearch.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+    }
+
+    handleSearch(e) {
+        e.preventDefault()
+        const searchText = e.target.value
+        this.props.handleSearch(searchText)
+    }
+
+    handleSubmit(e) {
+        e.preventDefault()
+    }
+
     render() {
         return (
             <div>
-                <form>
+                <form onSubmit={this.handleSubmit}>
                     <div class="input-group">
 
-                        <input type="text" class="form-control" />
+                        <input onKeyUp={this.handleSearch} type="text" class="form-control" />
                         <div class="input-group-btn">
                             <button class="btn btn-primary">
                                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
@@ -176,22 +193,37 @@ const DoctorTable = (props) => {
     )
 }
 class  DoctorSearchPage extends React.Component {
-    state = {
-        doctors: []
+
+
+    constructor(props) {
+        super(props)
+        this.handleSearch = this.handleSearch.bind(this)
+        this.state = {
+            doctors: [],
+            filteredDoctors: []
+        }
     }
+
+    
     componentDidMount(){
 
         fetchDoctors().then((doctors) => {
 
-            this.setState((prevState) => ({ doctors }))
-        })
-        
+            this.setState((prevState) => ({
+                doctors: doctors,
+                filteredDoctors: doctors
+             }))
+        })  
     }
 
+
+
     handleSearch(searchText) {
+        searchText = searchText.trim()
         this.setState((prevState) => ( {
-            doctors: prevState.doctors.filter((doctor) => {
-                return doctor.name.indexOf(searchText) >= 0
+            filteredDoctors: prevState.doctors.filter((doctor) => {
+                const stringified = [doctor.name, doctor.city, doctor.specialties.join()].join().toLowerCase()
+                return stringified.indexOf(searchText) >= 0
             })
         }))
     }
@@ -200,7 +232,7 @@ class  DoctorSearchPage extends React.Component {
         return (
             <div class="container">
                 <DoctorSearchForm handleSearch={this.handleSearch}/>
-                <DoctorTable doctors={this.state.doctors} />
+                <DoctorTable doctors={this.state.filteredDoctors} />
             </div>
         )
     }
@@ -211,21 +243,31 @@ class DoctorDetailPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            doctor: this.props.location.state,
+            doctor: null,
             similarDoctors: []
         }
+
+        this.loadDoctorAndSimilarDoctors = this.loadDoctorAndSimilarDoctors.bind(this)
     }
 
     componentDidMount() {
+        this.loadDoctorAndSimilarDoctors(this.props.match.params.id)
+    }
 
-        fetchDoctorById(this.props.match.params.id).then((doctor) => {
+    componentWillReceiveProps(newProps) {
+        this.loadDoctorAndSimilarDoctors(newProps.match.params.id)
+
+    }
+
+    loadDoctorAndSimilarDoctors(id){
+        fetchDoctorById(id).then((doctor) => {
             this.setState((prevState) => ({ doctor }))
             fetchSimilarDoctors(doctor).then((similarDoctors) => {
                 this.setState((prevState) => ({ similarDoctors }))
             })
         })
-
     }
+    
     
 
 
@@ -235,8 +277,7 @@ class DoctorDetailPage extends React.Component {
         const similarDoctors = this.state.similarDoctors
         if(!doctor)
             return null
-        console.log(doctor)
-        console.log(similarDoctors)
+        //console.log(doctor)
         
         const imageUrl = doctor.imageUrl ? doctor.imageUrl : '/images/general_doctor_male.png'
         return (
