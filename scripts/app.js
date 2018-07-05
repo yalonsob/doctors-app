@@ -3,19 +3,18 @@ const Route = ReactRouterDOM.Route;
 const Link = ReactRouterDOM.Link;
 const Switch = ReactRouterDOM.Switch;
 
+// Data for request to betterdoctor.com API
+
 // const latLon ='37.773972,-122.431297,100'
 // const userKey = 'daf039333d1a879721afe0d66786dfdb'
 // const limit = '50'
 // const url = `https://api.betterdoctor.com/2016-03-01/doctors?location=${latLon}&user_key=${userKey}&limit=${limit}`
+
+// Url for request to local file (source: betterdoctor.com)
 const url = 'api/doctors.json'
 
-
-var x = 3
-
-let doctors = []
-
-
-
+// Translates a doctor as it comes from the API 
+// into a doctor with the necessary attributes
 const parseDoctor = (doctor) => {
     const name = [
         doctor.profile.first_name, 
@@ -33,6 +32,7 @@ const parseDoctor = (doctor) => {
     }       
 }
 
+// Returns all doctors after an API request
 const fetchDoctors = () => {
     return fetch(url, {
         method: 'get'
@@ -44,22 +44,12 @@ const fetchDoctors = () => {
     })
 };
 
+// Returns a doctor given the id
 const fetchDoctorById = (id) => {
     return fetchDoctors().then((doctors) => doctors.find((doctor) => doctor.id === id))
 };
 
-const isSimilarDoctor = (doctor, otherDoctor) => {
-    if(doctor.id === otherDoctor.id) {
-        return false
-    }
-
-    const commonSpecialties = doctor.specialties.filter((s) => {
-        return otherDoctor.specialties.includes(s)
-    })
-
-    return commonSpecialties.length > 0
-}
-
+// Receives a doctor and returns the similar doctors
 const fetchSimilarDoctors = (doctor) => {
     return fetchDoctors().then((doctors) => { 
         return doctors.filter((otherDoctor) => {
@@ -68,49 +58,18 @@ const fetchSimilarDoctors = (doctor) => {
     })
 }
 
-
-const doctors2 = [
-    {
-        id: '1',
-        name: 'Jason',
-        city: 'San Francisco',
-        bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
-        imageUrl: undefined,
-        specialties: [
-            'Pediatrics'
-        ]    
-    }, {
-        id: '2',
-        name: 'Jason2',
-        city: 'San Francisco',
-        bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
-        imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
-        specialties: [
-            'Pediatrics'
-        ]
-    }, {
-        id: '3',
-        name: 'Jason3',
-        city: 'San Francisco',
-        bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
-        imageUrl: 'https://asset1.betterdoctor.com/assets/general_doctor_male.png',
-        specialties: [
-            'Pediatrics'
-        ]
-    }, {
-        id: '4',
-        name: 'Jason4',
-        city: 'San Francisco',
-        bio: 'Dr. Jason Snitzer, MD, specialist in pediatrics, currently sees patients in Santa clara, California. Dr. Snitzer is licensed to treat patients in California. Dr. Snitzer has passed an automated background check which looked at elements including medical license status and malpractice screening (no history found).',
-        imageUrl: undefined,
-        specialties: [
-            'Vision',
-            'Pediatrics',
-            'Neurology'
-        ]
+// Two doctors are similar if they have any specialty in common
+const isSimilarDoctor = (doctor, otherDoctor) => {
+    if (doctor.id === otherDoctor.id) {
+        return false
     }
-]
+    const commonSpecialties = doctor.specialties.filter((s) => {
+        return otherDoctor.specialties.includes(s)
+    })
+    return commonSpecialties.length > 0
+}
 
+// DoctorSearchForm Component contains the search form
 class DoctorSearchForm extends React.Component {
 
     constructor(props) {
@@ -134,7 +93,6 @@ class DoctorSearchForm extends React.Component {
             <div>
                 <form onSubmit={this.handleSubmit}>
                     <div class="input-group">
-
                         <input onKeyUp={this.handleSearch} type="text" class="form-control" />
                         <div class="input-group-btn">
                             <button class="btn btn-primary">
@@ -148,6 +106,7 @@ class DoctorSearchForm extends React.Component {
     } 
 }
 
+// DoctorRow Component contains a single doctor inside the table 
 const DoctorRow = (props) => {
     let specialties = props.doctor.specialties.join(', ')
     
@@ -168,7 +127,10 @@ const DoctorRow = (props) => {
     )
 }
 
+// DoctorTable Component contains the whole table with doctors
+// This component is being used twice: in the home page and for the similar doctors table
 const DoctorTable = (props) => {
+    
     return (    
         <div>
             <table class="table table-striped">
@@ -184,16 +146,15 @@ const DoctorTable = (props) => {
                         props.doctors.map((doctor, index) => 
                             <DoctorRow key={index} doctor={doctor} />
                         )
-                    }
-
-                    
+                    }   
                 </tbody>
             </table>
         </div>
     )
 }
-class  DoctorSearchPage extends React.Component {
 
+// DoctorSearchPage Component contains the DoctorSearchForm and the DoctorTable in home page
+class  DoctorSearchPage extends React.Component {
 
     constructor(props) {
         super(props)
@@ -204,19 +165,14 @@ class  DoctorSearchPage extends React.Component {
         }
     }
 
-    
     componentDidMount(){
-
         fetchDoctors().then((doctors) => {
-
             this.setState((prevState) => ({
                 doctors: doctors,
                 filteredDoctors: doctors
              }))
         })  
     }
-
-
 
     handleSearch(searchText) {
         searchText = searchText.trim()
@@ -230,7 +186,7 @@ class  DoctorSearchPage extends React.Component {
 
     render(){
         return (
-            <div class="container">
+            <div>
                 <DoctorSearchForm handleSearch={this.handleSearch}/>
                 <DoctorTable doctors={this.state.filteredDoctors} />
             </div>
@@ -238,6 +194,8 @@ class  DoctorSearchPage extends React.Component {
     }
 }
 
+// DoctorDetailPage Component contains the information about a single doctor
+//  and a table with similar doctors 
 class DoctorDetailPage extends React.Component {
 
     constructor(props) {
@@ -246,7 +204,6 @@ class DoctorDetailPage extends React.Component {
             doctor: null,
             similarDoctors: []
         }
-
         this.loadDoctorAndSimilarDoctors = this.loadDoctorAndSimilarDoctors.bind(this)
     }
 
@@ -256,7 +213,6 @@ class DoctorDetailPage extends React.Component {
 
     componentWillReceiveProps(newProps) {
         this.loadDoctorAndSimilarDoctors(newProps.match.params.id)
-
     }
 
     loadDoctorAndSimilarDoctors(id){
@@ -268,20 +224,13 @@ class DoctorDetailPage extends React.Component {
         })
     }
     
-    
-
-
     render() {
-        // console.log(this.props.match.params.id, this.props.location.state)
         const doctor = this.state.doctor
         const similarDoctors = this.state.similarDoctors
-        if(!doctor)
-            return null
-        //console.log(doctor)
-        
+        if(!doctor) return null
         const imageUrl = doctor.imageUrl ? doctor.imageUrl : '/images/general_doctor_male.png'
         return (
-            <div class="container">
+            <div>
                 <div class="media">
                     <div class="media-left media-middle">
                         <a href="#">
@@ -296,8 +245,7 @@ class DoctorDetailPage extends React.Component {
                     <ul class="list-group">
                         {
                             doctor.specialties.map((specialty) => <li class="list-group-item">{specialty}</li>)
-                        }
-                        
+                        }   
                     </ul>
                     <h4>Similar doctors</h4>
                     <DoctorTable doctors={similarDoctors} />
@@ -307,17 +255,23 @@ class DoctorDetailPage extends React.Component {
     }
 }
 
+// App Component contains the navigation and routes of the app
 const App = () => (
-
-    <Router>
-        <div>
-            <Link to="/">Home</Link>
-            <Switch>
-                <Route exact path="/" component={DoctorSearchPage} />
-                <Route path="/detail/:id" component={DoctorDetailPage} />
-            </Switch>
-        </div>
-    </Router>
+    <div class="container">
+        <Router>
+            <div>
+                <nav class="navbar navbar-default">
+                <ul class="nav navbar-nav">
+                    <li role="presentation"><Link to="/">Home</Link></li>
+                </ul>
+                </nav>
+                <Switch>
+                    <Route exact path="/" component={DoctorSearchPage} />
+                    <Route path="/detail/:id" component={DoctorDetailPage} />
+                </Switch>
+            </div>
+        </Router>
+    </div>    
 )
 
 
@@ -325,4 +279,4 @@ const App = () => (
 ReactDOM.render(
     <App />,
     document.getElementById('app')
-);
+)
